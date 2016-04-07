@@ -36,7 +36,7 @@ public class AtgApi {
         ObjectifyService.register(GroceryItem.class);
     }
 
-    @ApiMethod(name = "getAllGroceries")
+    @ApiMethod(name = "getAllGroceries", httpMethod = "GET")
     public List<GroceryItem> getAllGroceries() {
         List<GroceryItem> response = new ArrayList<>();
         LoadType<GroceryItem> groceryItems = ofy().load().type(GroceryItem.class);
@@ -46,12 +46,20 @@ public class AtgApi {
         return response;
     }
 
-    @ApiMethod(name = "addGrocery")
-    public GroceryItem addGrocery(GroceryItem item) {
+    @ApiMethod(name = "insertGrocery", httpMethod = "POST")
+    public GroceryItem insertGrocery(GroceryItem item) {
         Key<GroceryItem> itemKey = ofy().save().entity(item).now();
         item.setId(itemKey.getId());
         return item;
     }
+
+    @ApiMethod(name = "removeGrocery", httpMethod = "DELETE")
+    public GroceryItem removeGrocery(GroceryItem item) {
+        ofy().delete().entity(item).now();
+        return item;
+    }
+
+
 
 
 }
