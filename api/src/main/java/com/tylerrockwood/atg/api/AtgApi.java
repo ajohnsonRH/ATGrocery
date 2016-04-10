@@ -9,10 +9,13 @@ package com.tylerrockwood.atg.api;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.LoadType;
 import com.tylerrockwood.atg.api.models.GroceryItem;
+import com.tylerrockwood.atg.api.models.PendingUpload;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 )
 public class AtgApi {
 
+    private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     static {
         ObjectifyService.register(GroceryItem.class);
     }
@@ -59,7 +63,13 @@ public class AtgApi {
         return item;
     }
 
-
+    @ApiMethod(name = "addImage", httpMethod = "GET")
+    public PendingUpload addImage() {
+        PendingUpload upload = new PendingUpload();
+        String uploadUrl = blobstoreService.createUploadUrl("/image/upload");
+        upload.setUrl(uploadUrl);
+        return upload;
+    }
 
 
 }
